@@ -1,20 +1,20 @@
-{ lib
-, stdenv
-, callPackage
-, fetchFromGitHub
-, rustPlatform
-, CoreServices
-, cmake
-, libiconv
-, useMimalloc ? false
-, doCheck ? true
-, nix-update-script
+{
+  lib,
+  stdenv,
+  callPackage,
+  fetchFromGitHub,
+  rustPlatform,
+  CoreServices,
+  cmake,
+  libiconv,
+  useMimalloc ? false,
+  doCheck ? true,
+  nix-update-script,
 }:
-
 rustPlatform.buildRustPackage rec {
   pname = "rust-analyzer-unwrapped";
-  version = "2024-07-22";
-  cargoHash = "sha256-cimGPLp7TuAFvrr2i5zY5Q4GRxOfC1Vpe0qGHepBf5E=";
+  version = "2024-08-05";
+  cargoHash = "sha256-rFOh5qY1QxEAe8Ddl5Zubm6gsjldXHi53Ux1k4WaZSI=";
 
   src = fetchFromGitHub {
     owner = "rust-lang";
@@ -23,12 +23,12 @@ rustPlatform.buildRustPackage rec {
     sha256 = "sha256-LH3YPNUpJeCjiyf0yaYKxgCjUFtlB41Tr2tBTMGH//s=";
   };
 
-  cargoBuildFlags = [ "--bin" "rust-analyzer" "--bin" "rust-analyzer-proc-macro-srv" ];
-  cargoTestFlags = [ "--package" "rust-analyzer" "--package" "proc-macro-srv-cli" ];
+  cargoBuildFlags = ["--bin" "rust-analyzer" "--bin" "rust-analyzer-proc-macro-srv"];
+  cargoTestFlags = ["--package" "rust-analyzer" "--package" "proc-macro-srv-cli"];
 
   # Code format check requires more dependencies but don't really matter for packaging.
   # So just ignore it.
-  checkFlags = [ "--skip=tidy::check_code_formatting" ];
+  checkFlags = ["--skip=tidy::check_code_formatting"];
 
   nativeBuildInputs = lib.optional useMimalloc cmake;
 
@@ -56,16 +56,16 @@ rustPlatform.buildRustPackage rec {
   '';
 
   passthru = {
-    updateScript = nix-update-script { };
+    updateScript = nix-update-script {};
     # FIXME: Pass overrided `rust-analyzer` once `buildRustPackage` also implements #119942
-    tests.neovim-lsp = callPackage ./test-neovim-lsp.nix { };
+    tests.neovim-lsp = callPackage ./test-neovim-lsp.nix {};
   };
 
   meta = with lib; {
     description = "Modular compiler frontend for the Rust language";
     homepage = "https://rust-analyzer.github.io";
-    license = with licenses; [ mit asl20 ];
-    maintainers = with maintainers; [ oxalica ];
+    license = with licenses; [mit asl20];
+    maintainers = with maintainers; [oxalica];
     mainProgram = "rust-analyzer";
   };
 }
